@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PublicController extends Controller
 {
     public function index(){
-        return view('index');
+        $posts = Posts::all();
+        return view('index', compact('posts'));
     }
 
     public function page1(){
@@ -16,5 +18,9 @@ class PublicController extends Controller
 
     public function page2(){
         return view('page2');
+    }
+
+    public function post(Post $post){
+        return view('post', compact('post'));
     }
 }
