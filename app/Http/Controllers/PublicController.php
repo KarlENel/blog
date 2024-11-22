@@ -21,6 +21,7 @@ class PublicController extends Controller
     }
 
     public function post(Post $post){
-        return view('post', compact('post'));
+        return view('post',
+        compact('post'));
     }
 }
