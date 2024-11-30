@@ -27,18 +27,34 @@ class Post extends Model
 
     public function displayBody(): Attribute {
         return Attribute::get(function (){
-            return $this->body;
+            return nl2br($this->body);
         });
-        return Storage::disk('public')->url($this->image);
     }
 
-    public function iimage(): Attribute {
+    public function displayImage(): Attribute {
+        return Attribute::get(function (){
+            if(!$this->image || parse_url($this->image, PHP_URL_SCHEME)){
+                return $this->image;
+            }
+            return Storage::disk('public')->url($this->image);
+        });
+    }
+
+    public function image(): Attribute {
         return Attribute::set(function ($image){
             if($image instanceof UploadedFile){
-                return $image->store('',['disk' => 'public']);
+                return $image->store('', ['disk' => 'public']);
             }
             return $image;
         });
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
+    public function comments(){
+        return $this->hasMany(Comment::class);
     }
 
     /**
