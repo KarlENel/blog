@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Comment>
  */
-class PostFactory extends Factory
+class CommentFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -22,9 +22,7 @@ class PostFactory extends Factory
             $updated = $created;
         }
         return [
-            'title' => fake()->sentence,
-            'body' => fake()->paragraphs(6, true),
-            'image' => 'https://picsum.photos/seed/'. fake()->uuid .'/1280/720',
+            'body' => fake()->sentences(3, true),
             'created_at' => $created,
             'updated_at' => $updated,
         ];
