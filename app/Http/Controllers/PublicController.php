@@ -10,6 +10,7 @@ use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Follow;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PublicController extends Controller
@@ -34,7 +35,7 @@ class PublicController extends Controller
 
     public function user(User $user){
         $posts = $user->posts()->with('user')->withCount('comments')->latest()->paginate(16);
-        return view('index', compact('posts'));
+        return view('user', compact('posts', 'user'));
     }
 
     public function comment(Post $post, StoreCommentRequest $request){
@@ -62,5 +63,18 @@ class PublicController extends Controller
     public function tag(Tag $tag){
         $posts = $tag->posts()->with('user')->withCount('comments')->latest()->paginate(16);
         return view('index', compact('posts'));
+    }
+
+    public function follow(User $user){
+        $follow = Follow::where('follower_id', Auth::id())->andWhere('followee_id', $user->id)->first();
+        if($follow){
+            $follow->delete();
+        } else {
+            $follow = new Follow();
+            $follow->follower()->associate(Auth::user());
+            $follow->follower()->associate($user);
+            $follow->save();
+        }
+        return  redirect()->back();
     }
 }
