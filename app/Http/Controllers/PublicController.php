@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCommentRequest;
+use App\Models\Category;
 use App\Models\Comment;
+use App\Models\Follow;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Follow;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PublicController extends Controller
@@ -29,8 +31,7 @@ class PublicController extends Controller
     }
 
     public function post(Post $post){
-        return view('post',
-        compact('post'));
+        return view('post', compact('post'));
     }
 
     public function user(User $user){
@@ -66,15 +67,20 @@ class PublicController extends Controller
     }
 
     public function follow(User $user){
-        $follow = Follow::where('follower_id', Auth::id())->andWhere('followee_id', $user->id)->first();
+        $follow = Follow::where('follower_id', Auth::id())->where('followee_id', $user->id)->first();
         if($follow){
             $follow->delete();
         } else {
             $follow = new Follow();
             $follow->follower()->associate(Auth::user());
-            $follow->follower()->associate($user);
+            $follow->followee()->associate($user);
             $follow->save();
         }
-        return  redirect()->back();
+        return redirect()->back();
+    }
+
+    public function category(Category $category){
+        $posts = $category->getAllChildrenPostsQuery->with('user')->withCount('comments')->latest()->paginate(16);
+        return view('index', compact('posts'));
     }
 }
