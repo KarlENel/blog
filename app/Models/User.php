@@ -125,6 +125,26 @@ class User extends Authenticatable implements MustVerifyEmail
         });
     }
 
+    /**
+     * Get the options for generating the slug.
+     */
+    public function getSlugOptions() : SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
+    }
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     public function posts(){
         return $this->hasMany(Post::class);
     }
@@ -135,5 +155,30 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function likes(){
         return $this->hasMany(Like::class);
+    }
+
+    public function postComments(){
+        return $this->hasManyThrough(Comment::class, Post::class);
+    }
+
+    public function postLikes(){
+        return $this->hasManyThrough(Like::class, Post::class);
+    }
+
+    public function followers(){
+        return $this->hasManyThrough(User::class, Follow::class, 'followee_id', 'id', 'id', 'follower_id');
+    }
+
+    public function followees(){
+        return $this->hasManyThrough(User::class, Follow::class, 'follower_id', 'id', 'id', 'followee_id');
+    }
+
+    public function authHasFollowed(): Attribute {
+        return Attribute::get(function (){
+            if(!Auth::check()){
+                return false;
+            }
+            return $this->followers()->where('follows.follower_id', Auth::id())->exists();
+        });
     }
 }
