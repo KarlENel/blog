@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
-use App\Models\Image;
 use App\Models\Tag;
 use Auth;
 use Illuminate\Support\Facades\Storage;
@@ -49,18 +48,8 @@ class PostController extends Controller
         // $post->title = $request->input('title');
         // $post->body = $request->input('body');
         $post->save();
-        if($request->has('images')){
-            foreach($request->file('images') as $file){
-                $image = new Image();
-                $image->path = $file->store('', ['disk' => 'public']);
-                $image->post()->associate($post);
-                $image->save();
-            }
-        }
-        if($request->has('tags')){
-            foreach($request->input('tags') as $tagId){
-                $post->tags()->attach($tagId);
-            }
+        foreach($request->input('tags') as $tagId){
+            $post->tags()->attach($tagId);
         }
         return redirect()->route('posts.index');
     }
@@ -92,14 +81,6 @@ class PostController extends Controller
 
         // $post->fill($request->validated());
         // $post->save();
-        if($request->has('images')){
-            foreach($request->file('images') as $file){
-                $image = new Image();
-                $image->path = $file->store('', ['disk' => 'public']);
-                $image->post()->associate($post);
-                $image->save();
-            }
-        }
         $post->tags()->sync($request->input('tags'));
         $post->update($request->validated());
         return redirect()->route('posts.index');
