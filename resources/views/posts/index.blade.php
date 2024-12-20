@@ -1,11 +1,11 @@
 @extends('partials.layout')
 @section('title', 'Posts')
 @section('content')
-    <a href="{{ route('posts.create') }}" class="btn btn-primary">New Post</a>
+    <a href="{{ route('posts.create') }}" class="btn btn-primary ml-48 mt-4 mb-8">New Post</a>
     <div class="my-4 text-center">
         {{ $posts->links() }}
     </div>
-    <table class="table table-zebra">
+    <table class="table table-zebra w-3/4 justify-self-center">
         <thead>
             <th>ID</th>
             <th>Title</th>

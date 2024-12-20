@@ -11,15 +11,8 @@
 
 <body>
     @include('partials.nav')
-    <div class="flex">
-        <ul class="menu bg-base-200 rounded-box">
-            @foreach(App\Models\Category::where('parent_id', null)->get() as $category)
-               @include('partials.subcategory')
-            @endforeach
-        </ul>
-        <div>
-            @yield('content')
-        </div>
+    <div class="container mx-auto">
+        @yield('content')
     </div>
 </body>
 

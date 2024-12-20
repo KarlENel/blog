@@ -1,8 +1,8 @@
 @extends('partials.layout')
 @section('title', $post->title)
 @section('content')
-    <a href="{{ url()->previous() }}" class="my-2 btn btn-primary">Back</a>
-    <table class="table table-zebra">
+    <a href="{{ url()->previous() }}" class="my-2 btn btn-primary ml-48 mt-4 mb-8">Back</a>
+    <table class="table table-zebra w-3/4 justify-self-center">
         <tbody>
             <tr class="hover">
                 <th>ID</th>
