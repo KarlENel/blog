@@ -3,6 +3,7 @@
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicController::class, 'index'])->name('home');
@@ -11,8 +12,6 @@ Route::get('/pages/page2', [PublicController::class, 'page2'])->name('page2');
 Route::get('/post/{post}', [PublicController::class, 'post'])->name('post');
 Route::get('/user/{user}', [PublicController::class, 'user'])->name('user');
 Route::get('/tag/{tag}', [PublicController::class, 'tag'])->name('tag');
-Route::get('/category/{category}', [PublicController::class, 'category'])->name('category');
-
 
 
 // Route::get('/admin/posts', [PostController::class, 'index'])->name('posts.index');
@@ -37,10 +36,11 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     Route::resource('/admin/posts', PostController::class);
 
+    Route::resource('/admin/tags', TagController::class);
+
     Route::post('/post/{post}/comment', [PublicController::class, 'comment'])->name('comment');
 
     Route::post('/post/{post}/like', [PublicController::class, 'like'])->name('like');
-
     Route::post('/user/{user}/follow', [PublicController::class, 'follow'])->name('follow');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
